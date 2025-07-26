@@ -1,0 +1,10 @@
+flask
+gunicorn
+langchain
+langchain-google-genai
+langchain-pinecone
+pinecone-client
+beautifulsoup4
+requests
+python-dotenv
+sentence-transformers
