@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changi Chatbot</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .chat-container { width: 400px; height: 600px; border: 1px solid #ddd; border-radius: 8px; background-color: white; display: flex; flex-direction: column; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .chat-box { flex-grow: 1; padding: 10px; overflow-y: auto; border-bottom: 1px solid #ddd; }
+        .input-box { display: flex; padding: 10px; }
+        input { flex-grow: 1; border: 1px solid #ccc; border-radius: 4px; padding: 8px; }
+        button { border: none; background-color: #007bff; color: white; padding: 8px 12px; border-radius: 4px; margin-left: 8px; cursor: pointer; }
+        .message { margin-bottom: 10px; padding: 8px 12px; border-radius: 12px; max-width: 80%; line-break: anywhere; }
+        .user-message { background-color: #007bff; color: white; align-self: flex-end; margin-left: auto; }
+        .bot-message { background-color: #e9e9eb; color: black; align-self: flex-start; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox">
+             <div class="message bot-message">Hello! How can I help you with Changi Airport today?</div>
+        </div>
+        <div class="input-box">
+            <input type="text" id="userInput" placeholder="Ask a question..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const userInput = document.getElementById('userInput');
+
+        // ▼▼▼▼▼ YAHAN APNI RENDER WALI LIVE API URL PASTE KARO ▼▼▼▼▼
+        const apiUrl = 'https://changi-chatbot-s0i6.onrender.com/ask';
+        // ▲▲▲▲▲ YAHAN APNI RENDER WALI LIVE API URL PASTE KARO ▲▲▲▲▲
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.innerText = text;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const question = userInput.value;
+            if (!question.trim()) return;
+
+            addMessage(question, 'user');
+            userInput.value = '';
+            addMessage('Thinking...', 'bot'); // Loading indicator
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question })
+                });
+
+                // Remove the "Thinking..." message
+                chatBox.removeChild(chatBox.lastChild);
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                addMessage(data.answer, 'bot');
+
+            } catch (error) {
+                console.error('Error:', error);
+                // Remove the "Thinking..." message even if there is an error
+                if (chatBox.lastChild.innerText === 'Thinking...') {
+                    chatBox.removeChild(chatBox.lastChild);
+                }
+                addMessage('Sorry, something went wrong. Please try again.', 'bot');
+            }
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+</html>

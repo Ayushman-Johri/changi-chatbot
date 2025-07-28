@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # ✅ 1. Yeh line add karo
 from .chatbot import get_answer
 
 app = Flask(__name__)
+CORS(app)  # ✅ 2. Yeh line add karo (app = Flask... ke theek neeche)
 
 @app.route('/ask', methods=['POST'])
 def ask_question():

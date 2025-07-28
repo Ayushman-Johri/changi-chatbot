@@ -9,6 +9,17 @@
 # python-dotenv
 # sentence-transformers
 # langchain-community
+# flask
+# gunicorn
+# langchain
+# langchain-google-genai
+# langchain-pinecone
+# pinecone-client
+# beautifulsoup4
+# requests
+# python-dotenv
+# langchain-community
+# 'https://changi-chatbot-s0i6.onrender.com/ask'
 flask
 gunicorn
 langchain
@@ -19,3 +30,4 @@ beautifulsoup4
 requests
 python-dotenv
 langchain-community
+flask-cors
